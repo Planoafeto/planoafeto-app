@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plano Afeto</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body style="font-family: Arial; text-align: center; padding: 40px;">
+
+  <h2>Plano Afeto</h2>
+  <p>Seu boleto sempre disponível.</p>
+
+  <button onclick="verBoleto()" style="padding:15px 30px; font-size:16px;">
+    Ver Meu Boleto
+  </button>
+
+  <br><br>
+
+  <button id="installBtn" style="display:none; padding:10px 20px;">
+    Instalar App
+  </button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId");
+
+    function verBoleto() {
+      if(orderId){
+        window.location.href = "https://planoafeto.com.br/teste2?orderId=" + orderId;
+      } else {
+        alert("OrderId não encontrado.");
+      }
+    }
+
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      deferredPrompt.prompt();
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+
+</body>
+</html>
